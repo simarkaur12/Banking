@@ -1,23 +1,13 @@
-package com.hcl.Banking.entity;
+package com.hcl.Banking.DTO;
 
 /**
  * @author Administrator
  *
  */
-public class Login {
+public class LoginDTO {
 	
 	private Long userNumber;
 	private String password;
-
-	public Login() {
-		
-	}
-	
-	public Login(Long userNumber, String password) {
-		this.userNumber=userNumber;
-		this.password=password;
-	}
-
 
 	public Long getUserNumber() {
 		return userNumber;

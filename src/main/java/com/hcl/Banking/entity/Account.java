@@ -9,45 +9,34 @@ import javax.persistence.Table;
 public class Account {
 	
 	@Id
-	Long accountId;
-	
+	Long accountNumber;
 	String accountName;
-	
-	//@Value("${some.key:10000}")
 	Long openingBal;
+	Long userNumber;
 	
-	Long userId;
-	
-	public Long getAccountId() {
-		return accountId;
+	public Long getAccountNumber() {
+		return accountNumber;
 	}
-
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
+	public void setAccountNumber(Long accountNumber) {
+		this.accountNumber = accountNumber;
 	}
-
 	public String getAccountName() {
 		return accountName;
 	}
-
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
-
 	public Long getOpeningBal() {
 		return openingBal;
 	}
-
 	public void setOpeningBal(Long openingBal) {
 		this.openingBal = openingBal;
 	}
-
-	public Long getUserId() {
-		return userId;
+	public Long getUserNumber() {
+		return userNumber;
 	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUserNumber(Long userNumber) {
+		this.userNumber = userNumber;
 	}
-	
+		
 }

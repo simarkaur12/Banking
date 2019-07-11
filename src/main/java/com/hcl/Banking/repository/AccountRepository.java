@@ -7,5 +7,6 @@ import com.hcl.Banking.entity.*;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long>{
- public Account findByUserId(Long id);
+ public Account findByUserNumber(Long id);
+ public Account findByAccountNumber(Long accountNumber);
 }

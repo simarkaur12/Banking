@@ -1,16 +1,15 @@
 package com.hcl.Banking.service;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hcl.Banking.DTO.FundTransferDetailsDTO;
 import com.hcl.Banking.entity.Account;
-import com.hcl.Banking.entity.FundTranfer;
-import com.hcl.Banking.exception.ResourceNotFoundException;
+import com.hcl.Banking.entity.TransactionHistory;
 import com.hcl.Banking.repository.AccountRepository;
-import com.hcl.Banking.repository.FundtransferRepository;
+import com.hcl.Banking.repository.TransactionHistoryRepository;
 
 @Service
 public class FundTransferService {
@@ -19,7 +18,7 @@ public class FundTransferService {
 	AccountRepository accountRepository;
 	
 	@Autowired
-	FundtransferRepository fundTransferRepository;
+	TransactionHistoryRepository fundTransferRepository;
 	
 	/**
 	 * @param id User name of the current loginned user
@@ -28,7 +27,7 @@ public class FundTransferService {
 	public List<Account> getAllPayees(Long id) {
 		List<Account> allAccounts = accountRepository.findAll();
 		for(int i=0; i<allAccounts.size(); i++) {
-			if(allAccounts.get(i).getUserId().equals(id)) {
+			if(allAccounts.get(i).getUserNumber().equals(id)) {
 				allAccounts.remove(i);
 			}
 		}
@@ -39,26 +38,38 @@ public class FundTransferService {
 	
 	/**
 	 * @param fundTranferDetails, fund transfer details, from account, to account, amount
-	 * @param id id of the user
-	 * @return Fundtransfer object having all the fund transfer details
+	 * @return Fund Transfer object having all the fund transfer details
 	 */
-	public FundTranfer transferringFunds(FundTranfer fundTranferDetails, Long id) {
-		Account account = accountRepository.findByUserId(id);
-				
-		if(null==account)
-			throw new ResourceNotFoundException("Fundtransfer", "id", id);
-
-		fundTranferDetails.setUserId(id);
-		fundTranferDetails.setFromAccount(account.getAccountId());
-		account.setOpeningBal(account.getOpeningBal()+fundTranferDetails.getAmount());
+	public String transferringFunds(FundTransferDetailsDTO fundTranferDetails) {
+		Account payerAccount = accountRepository.findByUserNumber(fundTranferDetails.getUserNumber());
+		Account payeeAccount = accountRepository.findByAccountNumber(fundTranferDetails.getPayeeAccountNumber());
 		
-		FundTranfer fundTranfer = new FundTranfer();
-		fundTranfer.setAmount(fundTranferDetails.getAmount());
-		fundTranfer.setUserId(id);
-		fundTranfer.setFromAccount(account.getAccountId());
-		fundTranfer.setToAccount(fundTranferDetails.getToAccount());
-		fundTranfer.setTransactionDate(new Date(Calendar.getInstance().getTime().getTime()));
+		payeeAccount.setOpeningBal(payeeAccount.getOpeningBal()+fundTranferDetails.getAmount());
+		payerAccount.setOpeningBal(payerAccount.getOpeningBal()-fundTranferDetails.getAmount());
 		
-		return fundTransferRepository.save(fundTranfer);	
+		accountRepository.save(payeeAccount);
+		accountRepository.save(payerAccount);
+		
+		TransactionHistory payeeTransactionHistory = new TransactionHistory();
+		payeeTransactionHistory.setAccountNumber(payeeAccount.getAccountNumber());
+		payeeTransactionHistory.setAmount(fundTranferDetails.getAmount());
+		payeeTransactionHistory.setBalance(payeeAccount.getOpeningBal());
+		payeeTransactionHistory.setTransactionDate(LocalDateTime.now());
+		payeeTransactionHistory.setType("DEBIT");
+		payeeTransactionHistory.setUserNumber(payeeAccount.getUserNumber());
+		
+		fundTransferRepository.save(payeeTransactionHistory);
+		
+		TransactionHistory payerTransactionHistory = new TransactionHistory();
+		payeeTransactionHistory.setAccountNumber(payerAccount.getAccountNumber());
+		payeeTransactionHistory.setAmount(fundTranferDetails.getAmount());
+		payeeTransactionHistory.setBalance(payerAccount.getOpeningBal());
+		payeeTransactionHistory.setTransactionDate(LocalDateTime.now());
+		payeeTransactionHistory.setType("CREDIT");
+		payeeTransactionHistory.setUserNumber(payerAccount.getUserNumber());
+		
+		fundTransferRepository.save(payerTransactionHistory);
+		
+		return "Funds are transferred successfully";	
 	}
 }

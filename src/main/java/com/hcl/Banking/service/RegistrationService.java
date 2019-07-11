@@ -26,10 +26,10 @@ public class RegistrationService {
 	public Account registration(@Valid Registration registrationDetails) {
 			Registration registeredDetails = registrationRepository.save(registrationDetails);
 			Account account = new Account();
-			account.setAccountId(Math.round(Math.random()*1000000000));
-			account.setAccountName(registeredDetails.getGender());
+			account.setAccountNumber(Math.round(Math.random()*1000000000));
+			account.setAccountName(registeredDetails.getEmail());
 			account.setOpeningBal(10000L);
-			account.setUserId(registeredDetails.getUserNumber());
+			account.setUserNumber(registeredDetails.getUserNumber());
 			return accountRepository.save(account);
 	}
 }

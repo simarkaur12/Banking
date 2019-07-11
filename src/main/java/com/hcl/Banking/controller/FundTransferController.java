@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hcl.Banking.DTO.FundTransferDetailsDTO;
 import com.hcl.Banking.entity.Account;
-import com.hcl.Banking.entity.FundTranfer;
 import com.hcl.Banking.service.FundTransferService;
 
 /**
@@ -39,12 +39,11 @@ public class FundTransferController {
 	
 	/**
 	 * @param fundTranferDetails Details of toAccount, FromAccount, Amount and User id
-	 * @param id From Account user id
 	 * @return FundTransfer Object
 	 */
-	@PutMapping("/update/{id}")
-	public ResponseEntity<FundTranfer> fundTransfer(@RequestBody FundTranfer fundTranferDetails, @PathVariable Long id) {
-		return new ResponseEntity<>(fundTransferService.transferringFunds(fundTranferDetails, id), HttpStatus.OK);
+	@PutMapping("/update")
+	public ResponseEntity<String> fundTransfer(@RequestBody FundTransferDetailsDTO fundTranferDetails) {
+		return new ResponseEntity<>(fundTransferService.transferringFunds(fundTranferDetails), HttpStatus.OK);
 	}
 	
 }

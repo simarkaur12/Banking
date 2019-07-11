@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hcl.Banking.entity.FundTranfer;
-import com.hcl.Banking.entity.Login;
+import com.hcl.Banking.entity.TransactionHistory;
+import com.hcl.Banking.DTO.LoginDTO;
 import com.hcl.Banking.exception.ResourceNotFoundException;
 import com.hcl.Banking.service.LoginService;
 
@@ -38,7 +38,7 @@ public class LoginController {
 	 * @throws ResourceNotFoundException
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<List<FundTranfer>> validateLogin(@Valid @RequestBody Login login) {
+	public ResponseEntity<List<TransactionHistory>> validateLogin(@Valid @RequestBody LoginDTO login) {
 		return new ResponseEntity<>(loginService.validateLogin(login), HttpStatus.OK);
 	}
 	
